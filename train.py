@@ -6,7 +6,7 @@ from model import create_model
 from data_preprocessing import ToolDataset
 import os
 from tqdm import tqdm
-
+from pathlib import Path
 # Проверка устройства
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -17,8 +17,24 @@ learning_rate = 1e-4
 save_model_path = 'model.pth'
 
 # Пути к данным
-annotation_file = r'D:/ay/P_project/tool_endmill_dataset_coco/annotations/instances_Test.json'
-image_dir = r'D:/ay/P_project/tool_endmill_dataset_coco/images/Test'
+
+
+# Определяем путь к директории проекта (где находится скрипт)
+base_dir = Path(__file__).resolve().parent
+
+# Пути к файлам
+annotation_file = base_dir / "tool_endmill_dataset_coco" / "annotations" / "instances_Test.json"
+image_dir = base_dir / "tool_endmill_dataset_coco" / "images" / "Test"
+
+# Проверяем существование файлов
+if not annotation_file.exists():
+    raise FileNotFoundError(f"Файл аннотаций не найден: {annotation_file}")
+if not image_dir.exists():
+    raise FileNotFoundError(f"Папка с изображениями не найдена: {image_dir}")
+
+print("Файл аннотаций:", annotation_file)
+print("Папка с изображениями:", image_dir)
+
 
 assert os.path.exists(annotation_file), f"Файл {annotation_file} не найден!"
 assert os.path.exists(image_dir), f"Директория {image_dir} не найдена!"
